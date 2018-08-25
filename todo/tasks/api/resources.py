@@ -1,3 +1,5 @@
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +16,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = (IsAuthenticated, IsOwnerOrDeny)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
+    filter_fields = ('done',)
+    search_fields = ('notes',)
+    ordering_fields = ('due_date',)
 
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user)
