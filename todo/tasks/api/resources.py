@@ -1,5 +1,8 @@
 from rest_framework import viewsets
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 
 from ..models import Task
 from .serializers import TaskSerializer
@@ -17,3 +20,18 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+
+class TasksDoneViewSet(viewsets.ViewSet):
+
+    def done(self, request, *args, **kwargs):
+        pk = kwargs.get('pk')
+        task = get_object_or_404(Task, pk=pk)
+
+        task.mark_as_done()
+        task.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+done = TasksDoneViewSet.as_view({'patch': 'done'})

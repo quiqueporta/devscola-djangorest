@@ -7,4 +7,5 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('id', 'notes', 'due_date', 'url')
+        fields = ('id', 'notes', 'due_date', 'done', 'url')
+        read_only_fields = ('done',)
